@@ -4,7 +4,7 @@ const { Schema, model } = mongoose
 const reviewSchema = new Schema(
     {
         bookId: {
-            type: Schema.Types.ObjectId(),
+            type: Schema.Types.ObjectId,
             ref: "Book",
             require: true
         },

@@ -13,8 +13,9 @@ const bookSchema = new Schema(
             require: true
         },
         userId: {
-            type: Schema.Types.ObjectId(),
-            ref: "User"
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            require: true
         },
         ISBN: {
             type: String,
