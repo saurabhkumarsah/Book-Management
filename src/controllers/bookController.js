@@ -1,3 +1,4 @@
+import moment from "moment"
 import bookModel from "../models/bookModel.js"
 import reviewModel from "../models/reviewModel.js"
 import userModel from "../models/userModel.js"
@@ -90,7 +91,8 @@ export const updateBook = async (req, res) => {
 // DELETE BOOK (USING BOOK ID) ==============================================================================================================
 export const deleteBook = async (req, res) => {
     try {
-        const deleteBook = await bookModel.updfindOneAndUpdateateOne({ _id: req.params.bookId, isDeleted: false }, { isDeleted: true }, { new: true })
+        const date = moment().format()
+        const deleteBook = await bookModel.findOneAndUpdate({ _id: req.params.bookId, isDeleted: false }, { isDeleted: true, deletedAt: date }, { new: true })
         if (!deleteBook) return res.status(404).json({ status: false, message: "Book not found" })
 
         return res.status(201).json({ status: true, message: 'Book is deleted' })
