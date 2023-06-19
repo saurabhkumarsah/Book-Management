@@ -2,6 +2,7 @@ import moment from "moment"
 import bookModel from "../models/bookModel.js"
 import reviewModel from "../models/reviewModel.js"
 
+// CREATE REVIEW ================================================================================================================================
 export const addReview = async (req, res) => {
     try {
         const date = moment().format()
@@ -30,6 +31,8 @@ export const addReview = async (req, res) => {
     }
 }
 
+
+// UPDATE REVIEW ================================================================================================================================
 export const updateReview = async (req, res) => {
     try {
         let { bookId, reviewId } = req.params
@@ -58,13 +61,15 @@ export const updateReview = async (req, res) => {
     }
 }
 
+
+// DELETE REVIEW ================================================================================================================================
 export const deleteReview = async (req, res) => {
     try {
         let { bookId, reviewId } = req.params
 
         if (!bookId) return res.status(404).json({ status: false, message: "Book Id is missing" })
         if (!reviewId) return res.status(404).json({ status: false, message: "Review Id is missing" })
-        
+
         const dbBook = await bookModel.findOne({ _id: bookId, isDeleted: false })
         const dbReview = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
         if (!dbBook) return res.status(404).json({ status: false, message: "Book not Found" })
@@ -75,7 +80,7 @@ export const deleteReview = async (req, res) => {
         await bookModel.findOneAndUpdate({ _id: dbBook._id }, { reviews: dbBook.reviews - 1 })
 
         res.status(201).end()
-        
+
     } catch (error) {
         res.status(500).json({ status: false, message: error.message })
     }
