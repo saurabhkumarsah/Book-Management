@@ -74,15 +74,9 @@ export const deleteReview = async (req, res) => {
 
         await bookModel.findOneAndUpdate({ _id: dbBook._id }, { reviews: dbBook.reviews - 1 })
 
-        res.end()
+        res.status(201).end()
+        
     } catch (error) {
         res.status(500).json({ status: false, message: error.message })
     }
 }
-
-
-
-// DELETE / books /: bookId / review /: reviewId
-// Check if the review exist with the reviewId.Check if the book exist with the bookId.Send an error response with appropirate status code like this if the book or book review does not exist
-// Delete the related reivew.
-// Update the books document - decrease review count by one

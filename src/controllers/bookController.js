@@ -56,7 +56,7 @@ export const getBook = async (req, res) => {
     try {
         const bookData = await bookModel.findOne({ _id: req.params.bookId, isDeleted: false }).lean()
         if (bookData.length === 0) return res.status(404).json({ status: false, message: "Books not found" })
-        const reviewData = await reviewModel.find({ bookId: req.params.bookId })
+        const reviewData = await reviewModel.find({ bookId: req.params.bookId, isDeleted: false })
         bookData.reviewsData = reviewData
 
         return res.status(200).json({ status: true, message: 'Books list', data: bookData })
