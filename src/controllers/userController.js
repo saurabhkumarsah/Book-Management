@@ -23,7 +23,6 @@ export const createUser = async (req, res) => {
         if (password.length < 8 || password.length > 15) return res.status(400).json({ status: false, message: "Invalid Password" })
 
         const saveData = await userModel.create(req.body)
-        // delete saveData.title
         return res.status(201).json({ status: true, data: saveData })
     } catch (error) {
         return res.status(500).json({ status: false, message: error.message })
@@ -51,38 +50,3 @@ export const userLogin = async (req, res) => {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// POST / register
-// Create a user - atleast 5 users
-// Create a user document from request body.
-// Return HTTP status 201 on a succesful user creation.Also return the user document.The response should be a JSON object like this
-// Return HTTP status 400 if no params or invalid params received in request body.The response should be a JSON object like this
-
-// POST / login
-// Allow an user to login with their email and password.
-// On a successful login attempt return a JWT token contatining the userId, exp, iat.The response should be a JSON object like this
-// If the credentials are incorrect return a suitable error message with a valid HTTP status code.The response should be a JSON object like this
-
-// {
-//     status: true,
-//         data: {
-//         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JJZCI6IjYyZmUzYmUzMzY2ZmFkNDZjY2Q1MzI3ZiIsImlhdCI6MTY2MDgzMDA4MywiZXhwIjoxNjYwODY2MDgzfQ.mSo-TLyRlGhMNcy4ftEvvIlCHlyEqpaFZc-iBth4lfg"
-
-//     }
-// }
