@@ -1,4 +1,4 @@
-# Technetium
+<!-- # Technetium
 
 ## Project - Books Management
 
@@ -372,4 +372,136 @@ Refer below sample
         }
     }
 }
-```
+``` -->
+
+
+# Books Management Project
+
+This is a Books Management project that provides APIs for managing users, books, and book reviews. It allows users to register, login, create books, add reviews, update book information, and delete books. The project includes authentication and authorization mechanisms to ensure secure access to the APIs.
+
+## Models
+
+### User Model
+The User model represents a user in the system. It has the following properties:
+- `title`: The title of the user (string, mandatory, enum[Mr, Mrs, Miss]).
+- `name`: The name of the user (string, mandatory).
+- `phone`: The phone number of the user (string, mandatory, unique).
+- `email`: The email address of the user (string, mandatory, valid email, unique).
+- `password`: The password of the user (string, mandatory, minLen 8, maxLen 15).
+- `address`: The address of the user, including street, city, and pincode.
+- `createdAt`: The timestamp when the user document was created.
+- `updatedAt`: The timestamp when the user document was last updated.
+
+### Books Model
+The Books model represents a book in the system. It has the following properties:
+- `title`: The title of the book (string, mandatory, unique).
+- `excerpt`: A short excerpt or summary of the book (string, mandatory).
+- `userId`: The ID of the user who created the book (ObjectId, mandatory, references user model).
+- `ISBN`: The ISBN (International Standard Book Number) of the book (string, mandatory, unique).
+- `category`: The category of the book (string, mandatory).
+- `subcategory`: The subcategory of the book (string, mandatory).
+- `reviews`: The number of reviews for the book (number, default: 0).
+- `deletedAt`: The date when the document is deleted.
+- `isDeleted`: A boolean flag indicating whether the book is deleted (default: false).
+- `releasedAt`: The release date of the book (Date, mandatory, format("YYYY-MM-DD")).
+- `createdAt`: The timestamp when the book document was created.
+- `updatedAt`: The timestamp when the book document was last updated.
+
+### Review Model
+The Review model represents a review of a book. It has the following properties:
+- `bookId`: The ID of the book being reviewed (ObjectId, mandatory, references book model).
+- `reviewedBy`: The name of the reviewer (string, mandatory, default 'Guest').
+- `reviewedAt`: The date when the review was created (Date, mandatory).
+- `rating`: The rating given to the book (number, min 1, max 5, mandatory).
+- `review`: The review text (string, optional).
+- `isDeleted`: A boolean flag indicating whether the review is deleted (default: false).
+
+## API Endpoints
+
+### User APIs
+
+#### POST /register
+- Create a user by providing the required information in the request body.
+- Return HTTP status 201 on successful user creation along with the user document.
+- Return HTTP status 400 if no parameters or invalid parameters are received in the request body.
+
+#### POST /login
+- Allow a user to login with their email and password.
+- Return a JWT token containing the userId, exp, and iat on a successful login attempt.
+- Return a suitable error message with a valid HTTP status code if the credentials are incorrect.
+
+### Books API
+
+#### POST /books
+- Create a book by providing the required information in the request body, including the userId.
+- Make sure the userId is a valid userId by checking if the user exists in the users collection.
+- Return HTTP status 201 on successful book creation along with the book document.
+
+
+- Return HTTP status 400 if no parameters or invalid parameters are received in the request body.
+
+#### GET /books
+- Retrieve all books available in the system.
+- Allow optional query parameters for filtering by category and subcategory.
+- Return HTTP status 200 along with an array of book documents.
+
+#### GET /books/:id
+- Retrieve a specific book by providing its ID in the request path.
+- Return HTTP status 200 along with the book document if found.
+- Return HTTP status 404 if the book is not found.
+
+#### PUT /books/:id
+- Update a specific book by providing its ID in the request path and the updated information in the request body.
+- Return HTTP status 200 along with the updated book document if found and updated successfully.
+- Return HTTP status 400 if no parameters or invalid parameters are received in the request body.
+- Return HTTP status 404 if the book is not found.
+
+#### DELETE /books/:id
+- Delete a specific book by providing its ID in the request path.
+- Update the isDeleted and deletedAt fields in the book document.
+- Return HTTP status 200 if the book is successfully deleted.
+- Return HTTP status 404 if the book is not found.
+
+### Reviews API
+
+#### POST /books/:id/reviews
+- Add a review for a specific book by providing the book's ID in the request path and the review details in the request body.
+- Make sure the book exists before adding the review.
+- Return HTTP status 201 along with the created review document.
+- Return HTTP status 400 if no parameters or invalid parameters are received in the request body.
+- Return HTTP status 404 if the book is not found.
+
+#### GET /books/:id/reviews
+- Retrieve all reviews for a specific book by providing the book's ID in the request path.
+- Return HTTP status 200 along with an array of review documents.
+- Return HTTP status 404 if the book is not found.
+
+#### PUT /books/:id/reviews/:reviewId
+- Update a specific review of a book by providing the book's ID and review's ID in the request path, along with the updated information in the request body.
+- Return HTTP status 200 along with the updated review document if found and updated successfully.
+- Return HTTP status 400 if no parameters or invalid parameters are received in the request body.
+- Return HTTP status 404 if the book or review is not found.
+
+#### DELETE /books/:id/reviews/:reviewId
+- Delete a specific review of a book by providing the book's ID and review's ID in the request path.
+- Update the isDeleted field in the review document.
+- Return HTTP status 200 if the review is successfully deleted.
+- Return HTTP status 404 if the book or review is not found.
+
+## Authentication and Authorization
+
+- The project uses JWT (JSON Web Tokens) for authentication and authorization.
+- When a user registers or logs in successfully, a JWT token is generated and returned in the response.
+- This token should be included in the Authorization header of subsequent requests as `Bearer {token}` to access the protected routes.
+- The server will verify the token's authenticity and check if the user has the necessary permissions to perform the requested action.
+
+## Installation
+
+1. Clone the repository: `git clone <repository-url>`
+2. Install dependencies: `npm install`
+3. Configure the environment variables by creating a `.env` file (refer to `.env.example` for required variables)
+4. Start the application: `npm start`
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a pull request or open an issue if you find any bugs or want to improve the project.
