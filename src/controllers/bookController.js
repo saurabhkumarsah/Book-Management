@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import moment from "moment"
 import bookModel from "../models/bookModel.js"
 import reviewModel from "../models/reviewModel.js"
@@ -96,7 +95,6 @@ export const updateBook = async (req, res) => {
         return res.status(200).json({ status: true, message: 'Success', data: updateBook })
 
     } catch (error) {
-        // console.log(error.name);
         if (error.name === "CastError") return res.status(400).json({ status: false, message: "Data Type not matched" })
         return res.status(500).json({ status: false, message: error })
     }

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import userModel from "../models/userModel.js"
 import { isValidEmail, isValidMN, isValidPass, isValidTitle } from '../util/validator.js'
 
-
+// CREATE USER =====================================================================================================================================================================
 export const createUser = async (req, res) => {
     try {
         let { title, name, phone, email, password } = req.body
@@ -35,6 +35,7 @@ export const createUser = async (req, res) => {
 }
 
 
+// LOGIN USER ======================================================================================================================================================================
 export const userLogin = async (req, res) => {
     try {
 
