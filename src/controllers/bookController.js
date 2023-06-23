@@ -1,12 +1,15 @@
 import moment from "moment"
+import dateValidator from 'is-my-date-valid'
 import bookModel from "../models/bookModel.js"
 import reviewModel from "../models/reviewModel.js"
 import userModel from "../models/userModel.js"
 import { isId } from "../util/validator.js"
 
+
 // CREATE BOOK ================================================================================================================================
 export const createBook = async (req, res) => {
     try {
+        const dateValidator = validator({ format: 'YYYY-MM-DD' })
         delete req.body.deletedAt
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = req.body
 
@@ -31,6 +34,7 @@ export const createBook = async (req, res) => {
         if (!subcategory) return res.status(400).json({ status: false, message: "Sub Category is missing" })
 
         if (!releasedAt) return res.status(400).json({ status: false, message: "Released Date is missing" })
+        if (!dateValidator(releasedAt)) return res.status(400).json({ status: false, message: "Released Date is not valid" })
 
         const saveData = await bookModel.create(req.body)
         return res.status(201).json({ status: true, data: saveData })
