@@ -5,8 +5,7 @@ import { isId } from "../util/validator.js";
 export const authCreate = (req, res, next) => {
     try {
         const { SECRET_KEY } = process.env
-        if (!req.body.userId) return res.status(400).json({ status: false, message: "User Id is missing" })
-        if (!isId(req.body.userId)) return res.status(400).json({ status: false, message: "User ID is not valid" })
+        // if (!isId(req.body.userId)) return res.status(400).json({ status: false, message: "User ID is not valid" })
         const token = req.headers['x-api-key']
         if (!token) return res.status(400).json({ status: false, message: "Token is missing" })
         const decoded = jwt.verify(token, SECRET_KEY)
@@ -27,17 +26,17 @@ export const auth = async (req, res, next) => {
         if (!isId(req.params.bookId)) return res.status(400).json({ status: false, message: "Book ID is not valid" })
         const bookId = req.params.bookId
         const token = req.headers['x-api-key']
-        if (!token) return res.status(401).json({ status: false, message: "Token is missing" })
+        if (!token) return res.status(400).json({ status: false, message: "Token is missing" })
         const decoded = jwt.verify(token, SECRET_KEY)
 
         const bookData = await bookModel.findOne({ _id: bookId, isDeleted: false })
         if (!bookData) return res.status(404).json({ status: false, message: "Book is not found" })
 
-        if (decoded.id != bookData.userId) return res.status(403).json({ status: false, message: "User not valid" })
+        if (decoded.id != bookData.userId) return res.status(401).json({ status: false, message: "User not valid" })
 
         next()
     } catch (error) {
-        if (error.message === "invalid token") return res.status(401).json({ status: false, message: "Token is not valid" })
+        if (error.message === "invalid token") return res.status(400).json({ status: false, message: "Token is not valid" })
         return res.status(500).json({ status: false, message: error.message })
     }
 }

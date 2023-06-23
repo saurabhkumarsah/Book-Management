@@ -46,11 +46,11 @@ export const userLogin = async (req, res) => {
         const userData = await userModel.findOne({ email: email })
         if (!userData) return res.status(400).json({ status: false, message: "Invalid Email" })
 
-        if (!password) return res.status(401).json({ status: false, message: "Password is missing" })
-        if (userData.password !== password) return res.status(401).json({ status: false, message: "Invalid Password" })
+        if (!password) return res.status(400).json({ status: false, message: "Password is missing" })
+        if (userData.password !== password) return res.status(400).json({ status: false, message: "Invalid Password" })
 
         const token = jwt.sign({ id: userData._id.toString() }, SECRET_KEY, { expiresIn: '24h' })
-        return res.status(200).json({ status: true, data: { token: token } })
+        return res.status(201).json({ status: true, data: { token: token } })
 
     } catch (error) {
         return res.status(500).json({ status: false, message: error.message })

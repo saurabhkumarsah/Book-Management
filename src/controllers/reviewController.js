@@ -7,7 +7,7 @@ import { isId, isRating } from "../util/validator.js"
 export const addReview = async (req, res) => {
     try {
 
-        if (!isId(req.params.bookId)) return res.status(400).json({ status: false, message: "Book not found" })
+        if (!isId(req.params.bookId)) return res.status(404).json({ status: false, message: "Book not found" })
         const date = moment().format()
         req.body.reviewAt = date
         req.body.bookId = req.params.bookId
@@ -38,8 +38,8 @@ export const addReview = async (req, res) => {
 // UPDATE REVIEW ================================================================================================================================
 export const updateReview = async (req, res) => {
     try {
-        if (!isId(req.params.bookId)) return res.status(400).json({ status: false, message: "Book not found" })
-        if (!isId(req.params.reviewId)) return res.status(400).json({ status: false, message: "Review not found" })
+        if (!isId(req.params.bookId)) return res.status(404).json({ status: false, message: "Book not found" })
+        if (!isId(req.params.reviewId)) return res.status(404).json({ status: false, message: "Review not found" })
         let { bookId, reviewId } = req.params
 
         if (req.body.bookId) return res.status(401).json({ status: false, message: "Not updatable" })
