@@ -35,7 +35,7 @@ export const createBook = async (req, res) => {
         if (!releasedAt) return res.status(400).json({ status: false, message: "Released Date is missing" })
         if (!dateRegex.test(releasedAt)) return res.status(400).json({ status: false, message: "Date format is not valid" })
 
-        if (req.decoded != req.body.userId) return res.status(403).json({ status: false, message: "Unauthorization" })
+        // if (req.decoded != req.body.userId) return res.status(403).json({ status: false, message: "Unauthorization" })
 
         const saveData = await bookModel.create(req.body)
         return res.status(201).json({ status: true, data: saveData })
