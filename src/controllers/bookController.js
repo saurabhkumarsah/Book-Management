@@ -4,6 +4,8 @@ import reviewModel from "../models/reviewModel.js"
 import userModel from "../models/userModel.js"
 import { isId } from "../util/validator.js"
 
+const dateRegex = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/
+
 // CREATE BOOK ================================================================================================================================
 export const createBook = async (req, res) => {
     try {
@@ -31,6 +33,9 @@ export const createBook = async (req, res) => {
         if (!subcategory) return res.status(400).json({ status: false, message: "Sub Category is missing" })
 
         if (!releasedAt) return res.status(400).json({ status: false, message: "Released Date is missing" })
+        if (!dateRegex.test(releasedAt)) return res.status(400).json({ status: false, message: "Date format is not valid" })
+
+        if (req.decoded != req.body.userId) return res.status(403).json({ status: false, message: "Unauthorization" })
 
         const saveData = await bookModel.create(req.body)
         return res.status(201).json({ status: true, data: saveData })
@@ -45,7 +50,7 @@ export const getBooks = async (req, res) => {
     try {
 
         if (req.query.userId) {
-            if (!isId(req.query.userId)) return res.status(404).json({ status: false, message: "Books not found" })
+            if (!isId(req.query.userId)) return res.status(400).json({ status: false, message: "Invalid Id" })
         }
 
         const data = await bookModel.find({ $and: [{ isDeleted: false }, req.query] }).select({ __v: 0, subcategory: 0, ISBN: 0, isDeleted: 0, createdAt: 0, updatedAt: 0 }).sort({ title: 1 })
@@ -62,7 +67,7 @@ export const getBooks = async (req, res) => {
 // GET BOOK (USING BOOK ID) =================================================================================================================
 export const getBook = async (req, res) => {
     try {
-        if (!isId(req.params.bookId)) return res.status(404).json({ status: false, message: "Books not found" })
+        if (!isId(req.params.bookId)) return res.status(400).json({ status: false, message: "Invalid Id" })
 
         const bookData = await bookModel.findOne({ _id: req.params.bookId, isDeleted: false }).select({ ISBN: 0, __v: 0 }).lean()
         if (!bookData) return res.status(404).json({ status: false, message: "Books not found" })
@@ -89,6 +94,9 @@ export const updateBook = async (req, res) => {
         const dbISBN = await bookModel.findOne({ ISBN: ISBN })
         if (dbISBN) return res.status(400).json({ status: false, message: "ISBN is already exist" })
 
+        const dbUserId = await bookModel.findOne({ _id: req.params.bookId })
+        if (req.decoded != dbUserId.userId) return res.status(403).json({ status: false, message: "Unauthorization" })
+
         const updateBook = await bookModel.findOneAndUpdate({ _id: req.params.bookId, isDeleted: false }, req.body, { new: true })
         if (!updateBook) return res.status(404).json({ status: false, message: "Book not found" })
 
@@ -107,6 +115,9 @@ export const deleteBook = async (req, res) => {
     try {
         const date = moment().format()
         if (!isId(req.params.bookId)) return res.status(404).json({ status: false, message: "Book not found" })
+
+        const dbUserId = await bookModel.findOne({ _id: req.params.bookId })
+        if (req.decoded != dbUserId.userId) return res.status(403).json({ status: false, message: "Unauthorization" })
 
         const deleteBook = await bookModel.findOneAndUpdate({ _id: req.params.bookId, isDeleted: false }, { isDeleted: true, deletedAt: date }, { new: true })
         if (!deleteBook) return res.status(404).json({ status: false, message: "Book not found" })
