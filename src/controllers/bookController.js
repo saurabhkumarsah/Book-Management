@@ -84,7 +84,7 @@ export const getBook = async (req, res) => {
 // UPDATE BOOK (USING BOOK ID) ==============================================================================================================
 export const updateBook = async (req, res) => {
     try {
-        if (!isId(req.params.bookId)) return res.status(404).json({ status: false, message: "Book not found" })
+        if (!isId(req.params.bookId)) return res.status(400).json({ status: false, message: "Book not found" })
 
         let { title, ISBN } = req.body
 
@@ -114,9 +114,10 @@ export const updateBook = async (req, res) => {
 export const deleteBook = async (req, res) => {
     try {
         const date = moment().format()
-        if (!isId(req.params.bookId)) return res.status(404).json({ status: false, message: "Book not found" })
+        if (!isId(req.params.bookId)) return res.status(400).json({ status: false, message: "Book not found" })
 
         const dbUserId = await bookModel.findOne({ _id: req.params.bookId })
+        if (!dbUserId) return res.status(404).json({ status: false, message: "Book not found" })
         if (req.decoded != dbUserId.userId) return res.status(403).json({ status: false, message: "Unauthorization" })
 
         const deleteBook = await bookModel.findOneAndUpdate({ _id: req.params.bookId, isDeleted: false }, { isDeleted: true, deletedAt: date }, { new: true })
