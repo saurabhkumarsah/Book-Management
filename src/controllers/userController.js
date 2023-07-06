@@ -5,6 +5,7 @@ import { isValidEmail, isValidMN, isValidPass, isValidTitle } from '../util/vali
 // CREATE USER =====================================================================================================================================================================
 export const createUser = async (req, res) => {
     try {
+        console.log(req.body);
         let { title, name, phone, email, password } = req.body
 
         if (!title) return res.status(400).json({ status: false, message: "Title is missing" })

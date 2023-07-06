@@ -3,6 +3,10 @@ const { Schema, model } = mongoose
 
 const bookSchema = new Schema(
     {
+        bookCover: {
+            type: String,
+            require: true
+        },
         title: {
             type: String,
             require: true,

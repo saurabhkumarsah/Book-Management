@@ -3,14 +3,26 @@ import bookModel from "../models/bookModel.js"
 import reviewModel from "../models/reviewModel.js"
 import userModel from "../models/userModel.js"
 import { isId } from "../util/validator.js"
+import { uploadFile } from "../aws/aws.js"
 
 const dateRegex = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/
 
 // CREATE BOOK ================================================================================================================================
 export const createBook = async (req, res) => {
     try {
+
+        let files = req.files
+        if (files && files.length > 0) {
+            req.body.bookCover = await uploadFile(files[0])
+        }
+        else {
+            return res.status(400).send({ status: false, message: "Book Cover not found" })
+        }
+
         delete req.body.deletedAt
-        let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = req.body
+        let { bookCover, title, excerpt, userId, ISBN, category, subcategory, releasedAt } = req.body
+
+        if (!bookCover) return res.status(400).json({ status: false, message: "Book Cover is missing" })
 
         if (!title) return res.status(400).json({ status: false, message: "Title is missing" })
         const dbTitle = await bookModel.findOne({ title: title })
@@ -33,13 +45,13 @@ export const createBook = async (req, res) => {
         if (!subcategory) return res.status(400).json({ status: false, message: "Sub Category is missing" })
 
         if (!releasedAt) return res.status(400).json({ status: false, message: "Released Date is missing" })
-        if (!dateRegex.test(releasedAt)) return res.status(400).json({ status: false, message: "Date format is not valid" })
+        if (!dateRegex.test(releasedAt)) return res.status(400).json({ status: false, message: "Date format is not valid (YYYY-MM-DD)" })
 
         const saveData = await bookModel.create(req.body)
         return res.status(201).json({ status: true, data: saveData })
 
     } catch (error) {
-        return res.status(500).json({ status: false, message: error.message })
+        return res.status(500).json({ status: false, message: error })
     }
 }
 
@@ -127,6 +139,3 @@ export const deleteBook = async (req, res) => {
         return res.status(500).json({ status: false, message: error.message })
     }
 }
-
-
-
