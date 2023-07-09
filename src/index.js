@@ -1,12 +1,16 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import dotenv from "dotenv"
+import dotenv from 'dotenv'
+import multer from 'multer'
 import { router } from './routes/route.js'
-dotenv.config()
-const { MONGO_URI, PORT } = process.env
 
+dotenv.config()
+
+const { MONGO_URI, PORT } = process.env
 const app = express()
+
 app.use(express.json())
+app.use(multer().any())
 
 app.use('/', router)
 
