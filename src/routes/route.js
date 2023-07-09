@@ -15,7 +15,7 @@ router.post('/register', createUser)
 router.post('/login', userLogin)
 
 // Book Router
-router.post('/books', createBook)
+router.post('/books', auth, createBook)
 router.get('/books', auth, getBooks)
 router.get('/books/:bookId', auth, getBook)
 router.put('/books/:bookId', auth, updateBook)
